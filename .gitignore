@@ -1,0 +1,24 @@
+__pycache__/
+*.py[cod]
+*$py.class
+
+.venv/
+venv/
+env/
+
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+*.log
+
+# Model checkpoints and training outputs
+checkpoints/
+outputs/
+runs/
+*.pt
+*.pth
+
+# Local dataset copies
+data/
+datasets/
