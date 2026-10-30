@@ -13,7 +13,7 @@ ph2_train, ph2_val, ph2_test = ph2_loaders
 
 # DRIVE
 drive_loaders, drive_datasets = create_drive_loaders(
-    "/path/to/DRIVE"
+    "/dtu/datasets1/02516/DRIVE"
 )
 
 drive_train, drive_val, drive_test = drive_loaders
