@@ -22,3 +22,5 @@ runs/
 # Local dataset copies
 data/
 datasets/
+
+.vscode

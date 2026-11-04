@@ -108,12 +108,13 @@ def inspect_segmentation_dataset(dataset, name, is_drive=False):
             )
             assert fov.sum() > 0, f"{name}[{index}]: FOV mask is empty"
         else:
-            image, mask = item
+            image, mask, valid = item
             check_tensor(f"{name}[{index}] image", image, 3)
             check_tensor(f"{name}[{index}] lesion mask", mask, 1, binary=True)
+            check_tensor(f"{name}[{index}] valid mask", valid, 1, binary=True)
 
-            assert image.shape[-2:] == mask.shape[-2:], (
-                f"{name}[{index}]: image and lesion-mask sizes differ"
+            assert image.shape[-2:] == mask.shape[-2:] == valid.shape[-2:], (
+                f"{name}[{index}]: image, lesion-mask and valid-mask sizes differ"
             )
 
         assert image.shape[-2:] == (256, 256) if name.startswith("PH2") else True
@@ -138,14 +139,16 @@ def inspect_loader(loader, name, is_drive=False):
             f"vessel={tuple(vessel_masks.shape)}, FOV={tuple(fov_masks.shape)}"
         )
     else:
-        images, masks = batch
+        images, masks, valid_masks = batch
         check_tensor(f"{name} images", images, 3)
         check_tensor(f"{name} masks", masks, 1, binary=True)
+        check_tensor(f"{name} valid masks", valid_masks, 1, binary=True)
 
-        assert images.shape[0] == masks.shape[0]
-        assert images.shape[-2:] == masks.shape[-2:]
+        assert images.shape[0] == masks.shape[0] == valid_masks.shape[0]
+        assert images.shape[-2:] == masks.shape[-2:] == valid_masks.shape[-2:]
         print(
             f"{name}: images={tuple(images.shape)}, masks={tuple(masks.shape)}"
+            f", valid={tuple(valid_masks.shape)}"
         )
 
     print(f"{name}: batch tensor checks passed")

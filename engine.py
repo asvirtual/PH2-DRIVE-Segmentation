@@ -1,10 +1,10 @@
 """Training and evaluation loops shared by the segmentation models.
 
 Batches come straight from the existing data loaders:
-    PH2:   (image, mask)
+    PH2:   (image, mask, valid)
     DRIVE: (image, vessel_mask, fov_mask)
-The optional third tensor is used as the `valid` mask, so for DRIVE both the
-loss and the metrics only count pixels inside the field of view.
+The third tensor is used as the `valid` mask, so losses and metrics only count
+real image pixels (and, for DRIVE, pixels inside the field of view).
 """
 
 from __future__ import annotations
@@ -19,7 +19,7 @@ from metrics import MetricTracker
 
 
 def unpack_batch(batch, device):
-    """Return (images, targets, valid) on `device`; valid is None for PH2."""
+    """Return (images, targets, valid) on `device`."""
     images, targets, *rest = batch
     valid = rest[0].to(device) if rest else None
     return images.to(device), targets.to(device), valid
