@@ -33,6 +33,7 @@ from engine import (
 from losses import LOSS_NAMES, build_loss
 from metrics import METRIC_NAMES
 from unet import UNet, count_parameters
+from EncDec import EncDec, count_parameters
 
 DATASETS = {
     # name: (folder inside --data-root, loader factory from dataloaders.py)
@@ -46,7 +47,7 @@ def parse_args():
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
     )
     parser.add_argument("--dataset", choices=DATASETS, required=True)
-    parser.add_argument("--model", choices=["unet"], default="unet")
+    parser.add_argument("--model", choices=["unet","encdec"], default="unet")
     parser.add_argument("--loss", choices=LOSS_NAMES, default="bce")
     parser.add_argument(
         "--data-root",
@@ -90,6 +91,8 @@ def build_model(args) -> torch.nn.Module:
     # Other models (e.g. the encoder-decoder baseline) can be added here.
     if args.model == "unet":
         return UNet(base_channels=args.base_channels)
+    if args.model == "encdec":
+        return EncDec(base_channels=args.base_channels)
     raise ValueError(f"Unknown model {args.model!r}")
 
 
