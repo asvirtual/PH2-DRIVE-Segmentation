@@ -1,0 +1,188 @@
+/usr/bin/python
+Python 3.9.25
+Running PH2 with BCE:
+  epochs: 50
+  data_root: /dtu/datasets1/02516
+  out_dir: outputs
+  max_batches: None
+
+
+
+unet (7.76M parameters) on ph2, loss=bce, device=cuda, output=outputs/ph2_unet_bce_seed42
+epoch   1/50  train loss 0.4279  val loss 0.5408  val dice 0.3000  (best)
+epoch   2/50  train loss 0.3225  val loss 1.0385  val dice 0.4880  (best)
+epoch   3/50  train loss 0.3016  val loss 0.3454  val dice 0.7196  (best)
+epoch   4/50  train loss 0.2748  val loss 0.2674  val dice 0.8414  (best)
+epoch   5/50  train loss 0.2379  val loss 0.2667  val dice 0.7978
+epoch   6/50  train loss 0.2625  val loss 0.2516  val dice 0.8463  (best)
+epoch   7/50  train loss 0.2576  val loss 0.3501  val dice 0.7888
+epoch   8/50  train loss 0.2592  val loss 0.2912  val dice 0.8214
+epoch   9/50  train loss 0.2648  val loss 0.2723  val dice 0.8313
+epoch  10/50  train loss 0.2331  val loss 0.2340  val dice 0.8776  (best)
+epoch  11/50  train loss 0.2493  val loss 0.2340  val dice 0.8708
+epoch  12/50  train loss 0.2219  val loss 0.2123  val dice 0.8933  (best)
+epoch  13/50  train loss 0.2266  val loss 0.4772  val dice 0.7221
+epoch  14/50  train loss 0.2441  val loss 0.2330  val dice 0.8762
+epoch  15/50  train loss 0.2136  val loss 0.2102  val dice 0.9006  (best)
+epoch  16/50  train loss 0.2254  val loss 0.2154  val dice 0.8766
+epoch  17/50  train loss 0.2109  val loss 0.4554  val dice 0.7250
+epoch  18/50  train loss 0.2442  val loss 0.2616  val dice 0.8349
+epoch  19/50  train loss 0.2145  val loss 0.2352  val dice 0.8694
+epoch  20/50  train loss 0.2157  val loss 0.2726  val dice 0.8510
+epoch  21/50  train loss 0.2093  val loss 0.2433  val dice 0.8646
+epoch  22/50  train loss 0.2141  val loss 0.1926  val dice 0.8972
+epoch  23/50  train loss 0.1895  val loss 0.2207  val dice 0.8812
+epoch  24/50  train loss 0.1917  val loss 0.2594  val dice 0.8472
+epoch  25/50  train loss 0.1992  val loss 0.2280  val dice 0.8881
+epoch  26/50  train loss 0.1987  val loss 0.2318  val dice 0.8839
+epoch  27/50  train loss 0.1902  val loss 0.1834  val dice 0.9081  (best)
+epoch  28/50  train loss 0.1819  val loss 0.1675  val dice 0.9173  (best)
+epoch  29/50  train loss 0.2128  val loss 0.1800  val dice 0.9105
+epoch  30/50  train loss 0.1918  val loss 0.2719  val dice 0.8374
+epoch  31/50  train loss 0.2328  val loss 0.1935  val dice 0.8996
+epoch  32/50  train loss 0.1792  val loss 0.1899  val dice 0.9133
+epoch  33/50  train loss 0.1883  val loss 0.2528  val dice 0.8753
+epoch  34/50  train loss 0.1833  val loss 0.1820  val dice 0.9086
+epoch  35/50  train loss 0.1802  val loss 0.2147  val dice 0.8843
+epoch  36/50  train loss 0.1835  val loss 0.2859  val dice 0.8417
+epoch  37/50  train loss 0.1894  val loss 0.1925  val dice 0.9007
+epoch  38/50  train loss 0.1807  val loss 0.1673  val dice 0.9179  (best)
+epoch  39/50  train loss 0.1682  val loss 0.1770  val dice 0.9181  (best)
+epoch  40/50  train loss 0.1665  val loss 0.1744  val dice 0.9153
+epoch  41/50  train loss 0.1751  val loss 0.1674  val dice 0.9187  (best)
+epoch  42/50  train loss 0.1648  val loss 0.1751  val dice 0.9108
+epoch  43/50  train loss 0.1678  val loss 0.1899  val dice 0.9028
+epoch  44/50  train loss 0.1595  val loss 0.1652  val dice 0.9249  (best)
+epoch  45/50  train loss 0.1543  val loss 0.1658  val dice 0.9217
+epoch  46/50  train loss 0.1834  val loss 0.1456  val dice 0.9242
+epoch  47/50  train loss 0.1979  val loss 0.2032  val dice 0.9140
+epoch  48/50  train loss 0.1681  val loss 0.1595  val dice 0.9243
+epoch  49/50  train loss 0.1651  val loss 0.1559  val dice 0.9200
+epoch  50/50  train loss 0.1716  val loss 0.1810  val dice 0.9233
+Best validation Dice at epoch 44
+
+split                dice               iou          accuracy       sensitivity       specificity
+train      0.9036 ± 0.081    0.8328 ± 0.118    0.9422 ± 0.058    0.9524 ± 0.058    0.9144 ± 0.122
+val        0.9249 ± 0.053    0.8644 ± 0.086    0.9421 ± 0.063    0.9422 ± 0.086    0.9250 ± 0.142
+test       0.9134 ± 0.075    0.8481 ± 0.110    0.9609 ± 0.029    0.9254 ± 0.082    0.9430 ± 0.111
+Peak GPU memory: 1.62 GB
+Saved results to outputs/ph2_unet_bce_seed42
+
+
+
+encdec (0.07M parameters) on ph2, loss=bce, device=cuda, output=outputs/ph2_encdec_bce_seed42
+epoch   1/50  train loss 0.6452  val loss 0.6457  val dice 0.0000  (best)
+epoch   2/50  train loss 0.5636  val loss 0.8044  val dice 0.0000
+epoch   3/50  train loss 0.5273  val loss 0.6126  val dice 0.0052  (best)
+epoch   4/50  train loss 0.5268  val loss 0.5372  val dice 0.4465  (best)
+epoch   5/50  train loss 0.4778  val loss 0.4312  val dice 0.7734  (best)
+epoch   6/50  train loss 0.3998  val loss 0.4441  val dice 0.6010
+epoch   7/50  train loss 0.3972  val loss 0.3510  val dice 0.7510
+epoch   8/50  train loss 0.3614  val loss 0.3104  val dice 0.8143  (best)
+epoch   9/50  train loss 0.3780  val loss 0.4050  val dice 0.6329
+epoch  10/50  train loss 0.3451  val loss 0.4076  val dice 0.8062
+epoch  11/50  train loss 0.3428  val loss 0.3057  val dice 0.8289  (best)
+epoch  12/50  train loss 0.2908  val loss 0.3228  val dice 0.7535
+epoch  13/50  train loss 0.2958  val loss 0.3647  val dice 0.7328
+epoch  14/50  train loss 0.2847  val loss 0.3793  val dice 0.6968
+epoch  15/50  train loss 0.2984  val loss 0.3549  val dice 0.7843
+epoch  16/50  train loss 0.2711  val loss 0.3022  val dice 0.7841
+epoch  17/50  train loss 0.2537  val loss 0.2462  val dice 0.8568  (best)
+epoch  18/50  train loss 0.2371  val loss 0.2309  val dice 0.8649  (best)
+epoch  19/50  train loss 0.2586  val loss 0.2463  val dice 0.8611
+epoch  20/50  train loss 0.2388  val loss 0.2405  val dice 0.8632
+epoch  21/50  train loss 0.2223  val loss 0.2137  val dice 0.8791  (best)
+epoch  22/50  train loss 0.2086  val loss 0.2085  val dice 0.8875  (best)
+epoch  23/50  train loss 0.1890  val loss 0.1848  val dice 0.9053  (best)
+epoch  24/50  train loss 0.1784  val loss 0.2240  val dice 0.8687
+epoch  25/50  train loss 0.1806  val loss 0.2095  val dice 0.8794
+epoch  26/50  train loss 0.1823  val loss 0.1756  val dice 0.9002
+epoch  27/50  train loss 0.1889  val loss 0.1754  val dice 0.9095  (best)
+epoch  28/50  train loss 0.1708  val loss 0.1749  val dice 0.9052
+epoch  29/50  train loss 0.1588  val loss 0.1889  val dice 0.8947
+epoch  30/50  train loss 0.1597  val loss 0.1555  val dice 0.9103  (best)
+epoch  31/50  train loss 0.1659  val loss 0.1618  val dice 0.9133  (best)
+epoch  32/50  train loss 0.1540  val loss 0.1473  val dice 0.9207  (best)
+epoch  33/50  train loss 0.1620  val loss 0.1492  val dice 0.9200
+epoch  34/50  train loss 0.1563  val loss 0.1484  val dice 0.9191
+epoch  35/50  train loss 0.1599  val loss 0.1929  val dice 0.8944
+epoch  36/50  train loss 0.1744  val loss 0.1503  val dice 0.9212  (best)
+epoch  37/50  train loss 0.1715  val loss 0.1784  val dice 0.9045
+epoch  38/50  train loss 0.1717  val loss 0.1867  val dice 0.8909
+epoch  39/50  train loss 0.1622  val loss 0.1561  val dice 0.9132
+epoch  40/50  train loss 0.1459  val loss 0.1515  val dice 0.9133
+epoch  41/50  train loss 0.1533  val loss 0.1532  val dice 0.9129
+epoch  42/50  train loss 0.1457  val loss 0.1477  val dice 0.9174
+epoch  43/50  train loss 0.1429  val loss 0.2145  val dice 0.8864
+epoch  44/50  train loss 0.1516  val loss 0.1745  val dice 0.8970
+epoch  45/50  train loss 0.1410  val loss 0.1427  val dice 0.9185
+epoch  46/50  train loss 0.1912  val loss 0.1607  val dice 0.9202
+epoch  47/50  train loss 0.1835  val loss 0.1462  val dice 0.9235  (best)
+epoch  48/50  train loss 0.1478  val loss 0.1304  val dice 0.9253  (best)
+epoch  49/50  train loss 0.1440  val loss 0.1333  val dice 0.9257  (best)
+epoch  50/50  train loss 0.1396  val loss 0.1404  val dice 0.9198
+Best validation Dice at epoch 49
+
+split                dice               iou          accuracy       sensitivity       specificity
+train      0.9128 ± 0.065    0.8453 ± 0.096    0.9479 ± 0.057    0.9274 ± 0.078    0.9514 ± 0.067
+val        0.9257 ± 0.042    0.8644 ± 0.069    0.9460 ± 0.054    0.9126 ± 0.073    0.9673 ± 0.057
+test       0.9035 ± 0.086    0.8327 ± 0.113    0.9509 ± 0.052    0.9047 ± 0.073    0.9595 ± 0.073
+Peak GPU memory: 0.42 GB
+Saved results to outputs/ph2_encdec_bce_seed42
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@hpc.dtu.dk>
+Subject: Job 29900527: <ablation> in cluster <dcc> Done
+
+Job <ablation> was submitted from host <hpclogin1> by user <s263300> in cluster <dcc> at Thu Nov  5 17:05:56 2026
+Job was executed on host(s) <4*n-62-18-13>, in queue <c02516>, as user <s263300> in cluster <dcc> at Thu Nov  5 17:08:14 2026
+</zhome/b4/2/233360> was used as the home directory.
+</zhome/b4/2/233360/DL/PH2-DRIVE-Segmentation> was used as the working directory.
+Started at Thu Nov  5 17:08:14 2026
+Terminated at Thu Nov  5 17:11:56 2026
+Results reported at Thu Nov  5 17:11:56 2026
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+#!/bin/bash
+#BSUB -q c02516
+#BSUB -J ablation
+#BSUB -n 4
+#BSUB -R "span[hosts=1]"
+#BSUB -gpu "num=1:mode=exclusive_process"
+#BSUB -W 12:00
+#BSUB -R "rusage[mem=20GB]"
+#BSUB -o ./output/ablation_ph2_bce1.out
+#BSUB -e ./output/ablation_ph2_bce1.err
+
+cd /zhome/b4/2/233360/DL/PH2-DRIVE-Segmentation || exit 1
+which python
+python --version
+python -u abalation.py
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   210.32 sec.
+    Max Memory :                                 1076 MB
+    Average Memory :                             777.75 MB
+    Total Requested Memory :                     81920.00 MB
+    Delta Memory :                               80844.00 MB
+    Max Swap :                                   -
+    Max Processes :                              5
+    Max Threads :                                10
+    Run time :                                   222 sec.
+    Turnaround time :                            360 sec.
+
+The output (if any) is above this job summary.
+
+
+
+PS:
+
+Read file <./output/ablation_ph2_bce1.err> for stderr output of this job.
+
