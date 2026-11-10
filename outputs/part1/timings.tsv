@@ -1,0 +1,13 @@
+model	dataset	loss	epochs	exit_code	seconds
+unet	ph2	bce	100	0	117
+unet	ph2	weighted_bce	100	0	114
+unet	ph2	focal	100	0	113
+encdec	ph2	bce	100	0	76
+encdec	ph2	weighted_bce	100	0	72
+encdec	ph2	focal	100	0	73
+unet	drive	bce	600	0	231
+unet	drive	weighted_bce	600	0	230
+unet	drive	focal	600	0	238
+encdec	drive	bce	600	0	142
+encdec	drive	weighted_bce	600	0	141
+encdec	drive	focal	600	0	139
