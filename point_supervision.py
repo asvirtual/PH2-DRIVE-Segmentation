@@ -80,9 +80,55 @@ def sample_random(lesion, background, n_pos, n_neg, rng):
     return _choose(lesion, n_pos, rng), _choose(background, n_neg, rng)
 
 
-# Add new strategies here (task 1), e.g. "away_from_border" or "negatives_near_lesion".
+def _susee_strategy(lesion, background, n_pos, n_neg, rng, strategy: str):
+    """Adapter for Susee's generate_point_clicks (weak_annotations.py).
+
+    Her function works on a torch mask and does not take a valid/padding map,
+    so this crops to the valid (lesion | background) bounding box, calls her
+    sampler, and maps the coordinates back. The 3x3 click drawing stays in
+    draw_clicks, as for the random strategy. The built-in "random" strategy
+    is left as sample_random so the already-run random grid stays comparable.
+    """
+    import torch
+    from weak_annotations import generate_point_clicks
+
+    valid = lesion | background
+    if not valid.any():
+        empty = np.zeros((0, 2), dtype=int)
+        return empty, empty
+    rows, cols = np.where(valid)
+    r0, r1 = int(rows.min()), int(rows.max()) + 1
+    c0, c1 = int(cols.min()), int(cols.max()) + 1
+    crop = torch.from_numpy(lesion[r0:r1, c0:c1].astype(np.uint8))
+    generator = torch.Generator()
+    generator.manual_seed(int(rng.integers(0, 2**31 - 1)))
+    _, pos, neg = generate_point_clicks(
+        crop, n_positive=n_pos, n_negative=n_neg,
+        strategy=strategy, generator=generator,
+    )
+    pos = pos.cpu().numpy().astype(int) if pos.numel() else np.zeros((0, 2), dtype=int)
+    neg = neg.cpu().numpy().astype(int) if neg.numel() else np.zeros((0, 2), dtype=int)
+    if len(pos):
+        pos = pos + np.array([r0, c0])
+    if len(neg):
+        neg = neg + np.array([r0, c0])
+    return pos, neg
+
+
+def sample_center(lesion, background, n_pos, n_neg, rng):
+    """First positive click near the lesion centroid; extras and negatives random."""
+    return _susee_strategy(lesion, background, n_pos, n_neg, rng, "center")
+
+
+def sample_extreme(lesion, background, n_pos, n_neg, rng):
+    """Positive clicks start at top/bottom/left/right extremes; extras and negatives random."""
+    return _susee_strategy(lesion, background, n_pos, n_neg, rng, "extreme")
+
+
 CLICK_STRATEGIES: Dict[str, Callable] = {
     "random": sample_random,
+    "center": sample_center,
+    "extreme": sample_extreme,
 }
 
 
