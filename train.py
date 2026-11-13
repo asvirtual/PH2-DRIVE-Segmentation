@@ -5,7 +5,12 @@ Run from the repository root, for example:
     python train.py --dataset drive --loss focal --epochs 200 --data-root ../data
 On the DTU HPC the default --data-root (/dtu/datasets1/02516) can be used.
 
-Each run writes to <out-dir>/<dataset>_<model>_<loss>_seed<seed>/:
+Part 2 (point supervision on PH2): add --clicks-pos / --clicks-neg, e.g.
+    python train.py --dataset ph2 --loss point_bce --clicks-pos 5 --clicks-neg 5
+The training set then has only the simulated clicks; val/test keep full masks.
+
+Each run writes to <out-dir>/<dataset>_<model>_<loss>_seed<seed>/
+(Part 2: <dataset>_<model>_<loss>_clicks<pos>p<neg>n_<strategy>_seed<seed>/):
     best.pt          weights with the best validation Dice
     results.json     arguments, training history, and the five metrics
                      (mean and std over images) on train, val and test
@@ -31,6 +36,7 @@ from engine import (
     save_prediction_figure,
 )
 from losses import LOSS_NAMES, build_loss
+from point_supervision import CLICK_STRATEGIES, create_ph2_click_loaders
 from metrics import METRIC_NAMES
 from unet import UNet, count_parameters
 from EncDec import EncDec, count_parameters
@@ -78,7 +84,25 @@ def parse_args():
         default=None,
         help="only use this many batches per pass (for quick smoke tests)",
     )
-    return parser.parse_args()
+    # Part 2: point supervision (PH2 only). Leave --clicks-pos unset for full masks.
+    parser.add_argument("--clicks-pos", type=int, default=None, help="positive clicks per training image")
+    parser.add_argument("--clicks-neg", type=int, default=None, help="negative clicks per training image")
+    parser.add_argument("--click-strategy", choices=list(CLICK_STRATEGIES), default="random")
+    parser.add_argument("--click-radius", type=int, default=1, help="click = (2r+1)^2 square")
+    parser.add_argument("--click-seed", type=int, default=0, help="seed for sampling the clicks")
+    args = parser.parse_args()
+
+    args.point_supervision = args.clicks_pos is not None or args.clicks_neg is not None
+    if args.point_supervision:
+        if args.dataset != "ph2":
+            parser.error("point supervision (--clicks-pos/--clicks-neg) is only for --dataset ph2")
+        args.clicks_pos = args.clicks_pos or 0
+        args.clicks_neg = args.clicks_neg or 0
+        if args.clicks_pos + args.clicks_neg == 0:
+            parser.error("give at least one click")
+        if args.loss == "weighted_bce":
+            parser.error("weighted_bce needs full masks; use point_bce or bce with clicks")
+    return args
 
 
 def set_seed(seed: int):
@@ -114,9 +138,32 @@ def main():
     folder, create_loaders = DATASETS[args.dataset]
     sizes = {"batch_size": args.batch_size, "image_size": args.image_size}
     sizes = {key: value for key, value in sizes.items() if value is not None}
-    (train_loader, val_loader, test_loader), (train_set, _, _) = create_loaders(
-        args.data_root / folder, num_workers=args.num_workers, **sizes
-    )
+    if args.point_supervision:
+        # Training set with clicks; train_set has the full masks, used only to
+        # evaluate the training split (never for training).
+        (train_loader, val_loader, test_loader), (click_set, train_set, _, _) = (
+            create_ph2_click_loaders(
+                args.data_root / folder,
+                n_pos=args.clicks_pos,
+                n_neg=args.clicks_neg,
+                strategy=args.click_strategy,
+                click_radius=args.click_radius,
+                click_seed=args.click_seed,
+                train_seed=args.seed,
+                num_workers=args.num_workers,
+                **sizes,
+            )
+        )
+        placed = np.array(click_set.n_clicks)
+        print(
+            f"Point supervision: {args.clicks_pos} pos / {args.clicks_neg} neg clicks per image "
+            f"({args.click_strategy}); placed on average {placed[:, 0].mean():.1f} pos / "
+            f"{placed[:, 1].mean():.1f} neg"
+        )
+    else:
+        (train_loader, val_loader, test_loader), (train_set, _, _) = create_loaders(
+            args.data_root / folder, num_workers=args.num_workers, **sizes
+        )
     # The training split is evaluated without augmentation.
     train_eval_loader = eval_loader(
         train_set, train_loader.batch_size, args.num_workers
@@ -129,7 +176,10 @@ def main():
     model = build_model(args).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
 
-    run_dir = args.out_dir / f"{args.dataset}_{args.model}_{args.loss}_seed{args.seed}"
+    run_name = f"{args.dataset}_{args.model}_{args.loss}"
+    if args.point_supervision:
+        run_name += f"_clicks{args.clicks_pos}p{args.clicks_neg}n_{args.click_strategy}"
+    run_dir = args.out_dir / f"{run_name}_seed{args.seed}"
     run_dir.mkdir(parents=True, exist_ok=True)
     print(
         f"{args.model} ({count_parameters(model) / 1e6:.2f}M parameters) on "
